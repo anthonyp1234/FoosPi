@@ -36,19 +36,16 @@ RED       = (255,0,0)
 GREEN     = (0,255,0)
 
 ##First co-ord is x, second is y)
-RED_BTN_TEXT = (82,152)
-RED_BTN_CO = (80,150,70,20)
-BLACK_BTN_TEXT = (252,152)
-BLACK_BTN_CO = (250,150,70,20)
-
-RED_PEN_TXT = (RED_BTN_TEXT[0],RED_BTN_TEXT[1]+20)
-RED_PEN_CO = (RED_PEN_TXT[0],RED_PEN_TXT[1],70,20)
-BLACK_PEN_TXT = (BLACK_BTN_TEXT[0],BLACK_BTN_TEXT[1]+30)
-BLACK_PEN_CO = (BLACK_PEN_TXT[0],BLACK_PEN_TXT[1],70,30)
+RED_BTN_CO = (80,125,90,30)
+RED_BTN_TEXT = (RED_BTN_CO[0]+3,RED_BTN_CO[1]+3)
+RED_PEN_CO = (RED_BTN_CO[0],RED_BTN_CO[1]+40,90,30)
+RED_PEN_TXT = (RED_PEN_CO[0]+3,RED_PEN_CO[1]+3)
 
 
-#####
-
+BLACK_BTN_CO = (225,125,90,30)
+BLACK_BTN_TEXT = (BLACK_BTN_CO[0]+3,BLACK_BTN_CO[1]+3)
+BLACK_PEN_CO = (BLACK_BTN_CO[0],BLACK_BTN_CO[1]+40,90,30)
+BLACK_PEN_TXT = (BLACK_PEN_CO[0]+3,BLACK_PEN_CO[1]+3)
 
 ####
 ##Start the screen
@@ -94,14 +91,14 @@ black_penalty_btn = Button('Black Penalty','GREEN')
 #DEFINE A bunch of functions
 
 ##define what to do on interupt event
-def red_score_interupt (pin):
+def red_score_interupt():
     red_score = red_score+1
-    #play score vid here
+    play_vid(goal_videos)  
     return
     
-def red_score_interupt (pin):
+def red_score_interupt():
     black_score = black_score+1
-    #play score vid here
+    play_vid(goal_videos)
     return
 
 
@@ -180,6 +177,12 @@ while not done:
   #draw scores on screen
   clock.tick(60)
   mouse = pygame.mouse.get_pos()
+  
+  
+  ##Check for music playing, if not play something
+  if !pygame.mixer.music.get_busy():
+    play_sound(music)
+ 
   
   render_backgorund()  
   draw_score(str(red_score),str(black_score))
