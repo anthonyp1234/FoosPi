@@ -27,6 +27,9 @@ RED_TEXT = (int(DISPLAY_SIZE[0]/3)-30,20)  ###Align score text to display
 BLACK_TEXT = (int(DISPLAY_SIZE[0]*2/3)-30, 20)  ###Align score text to display
 FPS = 60
 
+PERCENTAGE_GOAL_VIDEO_PLAY = 0.7
+PERCENTAGE_PENALTY_VIDEO_PLAY = 0.2
+
 BLACK     = (  0,   0,   0)
 WHITE     = (255, 255, 255)
 DARKGRAY  = ( 64,  64,  64)
@@ -89,6 +92,13 @@ black_penalty_btn = Button('Black Penalty','GREEN')
 
 ######
 #DEFINE A bunch of functions
+
+def random_chance(percentage_play):
+  random_number = random.randint(1, 10)
+  percentage = int(percentage_play*10)
+  if( random_number < percentage):
+    return true
+  return false
 
 ##define what to do on interupt event
 def red_score_interupt():
@@ -169,7 +179,7 @@ def black_wins():
 play_vid(start_videos)
 
 done = False
-
+pygame.mixer.init()
 mouse = pygame.mouse.get_pos()
 clock = pygame.time.Clock()
 ##Start an endless loop
@@ -180,7 +190,7 @@ while not done:
   
   
   ##Check for music playing, if not play something
-  if !pygame.mixer.music.get_busy():
+  if not pygame.mixer.music.get_busy():
     play_sound(music)
  
   
