@@ -10,7 +10,7 @@ import os
 from extras import Button
 
 from sprites import TestSprite
-from pygame.examples import testsprite
+
 
 
 ##SET GPIO to trigger on a low voltage 
@@ -32,7 +32,11 @@ RED_TEXT = (int(DISPLAY_SIZE[0]/3)-30,20)  ###Align score text to display
 BLACK_TEXT = (int(DISPLAY_SIZE[0]*2/3)-30, 20)  ###Align score text to display
 FPS = 60
 
-PERCENTAGE_GOAL_VIDEO_PLAY = 0.7
+REDRAW_SPRITE = 500 # REDRAW_SPRITE time in ms
+
+
+
+PERCENTAGE_GOAL_VIDEO_PLAY = 0.6
 PERCENTAGE_PENALTY_VIDEO_PLAY = 0.2
 
 BLACK     = (  0,   0,   0)
@@ -169,8 +173,15 @@ def play_vid(video_list):
     pygame.display.flip() 
     #print "playing movie"
     movie.play()
-    pygame.mixer.init() #start mixer for the sounds again
-    time.sleep(10)
+    
+    while movie.get_busy():
+      print ""  ##Do nothing until movie ends!
+    
+    pygame.mixer.init() #start mixer for the sounds again  
+    try:
+      render_backgorund()
+    except :
+      print ""
     return
 
 def red_wins():
@@ -190,7 +201,7 @@ mouse = pygame.mouse.get_pos()
 clock = pygame.time.Clock()
 
 
-SPRITE_COORDINATE = (int(DISPLAY_SIZE[0]/2),int(DISPLAY_SIZE[1]/2))
+SPRITE_COORDINATE = (int(DISPLAY_SIZE[0]/2)-30,int(DISPLAY_SIZE[1]/2)+20)
 
 my_sprite = TestSprite(SPRITE_COORDINATE,sprites)
 
@@ -198,16 +209,16 @@ my_sprite = TestSprite(SPRITE_COORDINATE,sprites)
 my_group = pygame.sprite.Group(my_sprite)
 
 
+##create an event
+RESETEVENT = pygame.USEREVENT + 1
+pygame.time.set_timer(RESETEVENT, REDRAW_SPRITE)
+
+render_backgorund() 
 ##Start an endless loop
 while not done:
+  
+  clock.tick(FPS)
 
-  #Draw Animation sprites to screen.
-  my_group.update()
-  my_group.draw(screen)
-  pygame.display.flip()
-
-
-  clock.tick(60)
   mouse = pygame.mouse.get_pos()
   
   ##Check for music playing, if not play something
@@ -216,9 +227,7 @@ while not done:
     pygame.mixer.init()
   if not pygame.mixer.music.get_busy():
     play_sound(music)
- 
-  
-  render_backgorund()  
+    
   draw_score(str(red_score),str(black_score))
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
@@ -240,7 +249,13 @@ while not done:
         black_score = black_score -1
         if random_chance(PERCENTAGE_PENALTY_VIDEO_PLAY):
           play_vid(goal_videos) 
- 
+    elif event.type == RESETEVENT:
+        #Draw Animation sprites to screen.
+        my_group.update()
+        my_group.draw(screen)
+        pygame.display.flip()
+        pygame.time.set_timer(RESETEVENT, REDRAW_SPRITE)
+    
   if(score_check(red_score,black_score) == "black" ):
     black_wins()
     done = True
