@@ -5,6 +5,7 @@ import random
 import glob #for listing all the files in a directory
 import pygame
 import sys
+import time
 import os
 from extras import Button
 
@@ -22,7 +23,7 @@ pygame.init()
 pygame.mixer.init()
 myfont = pygame.font.SysFont("monospace", 80)  #initialize system font
 
-DISPLAY_SIZE = (400, 240)
+DISPLAY_SIZE = (320, 240)
 RED_TEXT = (int(DISPLAY_SIZE[0]/3)-30,20)  ###Align score text to display
 BLACK_TEXT = (int(DISPLAY_SIZE[0]*2/3)-30, 20)  ###Align score text to display
 FPS = 60
@@ -97,18 +98,20 @@ def random_chance(percentage_play):
   random_number = random.randint(1, 10)
   percentage = int(percentage_play*10)
   if( random_number < percentage):
-    return true
-  return false
+    return True
+  return False
 
 ##define what to do on interupt event
 def red_score_interupt():
     red_score = red_score+1
-    play_vid(goal_videos)  
+    if random_chance(PERCENTAGE_GOAL_VIDEO_PLAY):
+      play_vid(goal_videos)  
     return
     
 def red_score_interupt():
     black_score = black_score+1
-    play_vid(goal_videos)
+    if random_chance(PERCENTAGE_GOAL_VIDEO_PLAY):
+      play_vid(goal_videos)  
     return
 
 
@@ -163,6 +166,7 @@ def play_vid(video_list):
     print "playing movie"
     movie.play()
     pygame.mixer.init() #start mixer for the sounds again
+    time.sleep(10)
     return
 
 def red_wins():
@@ -202,12 +206,20 @@ while not done:
     elif event.type == pygame.MOUSEBUTTONDOWN:
       if red_button.obj.collidepoint(mouse):
         red_score = red_score +1
+        if random_chance(PERCENTAGE_GOAL_VIDEO_PLAY):
+            play_vid(goal_videos)  
       elif black_button.obj.collidepoint(mouse):
         black_score = black_score +1
+        if random_chance(PERCENTAGE_GOAL_VIDEO_PLAY):
+          play_vid(goal_videos) 
       if red_penalty_btn.obj.collidepoint(mouse):
         red_score = red_score -1
+        if random_chance(PERCENTAGE_PENALTY_VIDEO_PLAY):
+          play_vid(goal_videos)         
       elif black_penalty_btn.obj.collidepoint(mouse):
         black_score = black_score -1
+        if random_chance(PERCENTAGE_PENALTY_VIDEO_PLAY):
+          play_vid(goal_videos) 
   #my_input = raw_input("What's your selection?: ")
   my_input = ""
   
