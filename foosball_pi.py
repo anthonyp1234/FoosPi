@@ -9,6 +9,10 @@ import time
 import os
 from extras import Button
 
+from sprites import TestSprite
+from pygame.examples import testsprite
+
+
 ##SET GPIO to trigger on a low voltage 
 #GPIO.setmode(GPIO.BCM)
 #GPIO.setup(23, GPIO.IN, pull_up_down = GPIO.PUD_UP)
@@ -21,7 +25,7 @@ from extras import Button
 
 pygame.init()
 pygame.mixer.init()
-myfont = pygame.font.SysFont("monospace", 80)  #initialize system font
+myfont = pygame.font.SysFont("comicsansms", 80)  #initialize system font
 
 DISPLAY_SIZE = (320, 240)
 RED_TEXT = (int(DISPLAY_SIZE[0]/3)-30,20)  ###Align score text to display
@@ -41,20 +45,20 @@ GREEN     = (0,255,0)
 
 ##First co-ord is x, second is y)
 RED_BTN_CO = (40,125,90,30)
-RED_BTN_TEXT = (RED_BTN_CO[0]+3,RED_BTN_CO[1]+3)
+RED_BTN_TEXT = (RED_BTN_CO[0]+10,RED_BTN_CO[1]+10)
 RED_PEN_CO = (RED_BTN_CO[0],RED_BTN_CO[1]+40,90,30)
-RED_PEN_TXT = (RED_PEN_CO[0]+3,RED_PEN_CO[1]+3)
+RED_PEN_TXT = (RED_PEN_CO[0]+8,RED_PEN_CO[1]+8)
 
 
 BLACK_BTN_CO = (185,125,90,30)
-BLACK_BTN_TEXT = (BLACK_BTN_CO[0]+3,BLACK_BTN_CO[1]+3)
+BLACK_BTN_TEXT = (BLACK_BTN_CO[0]+8,BLACK_BTN_CO[1]+8)
 BLACK_PEN_CO = (BLACK_BTN_CO[0],BLACK_BTN_CO[1]+40,90,30)
-BLACK_PEN_TXT = (BLACK_PEN_CO[0]+3,BLACK_PEN_CO[1]+3)
+BLACK_PEN_TXT = (BLACK_PEN_CO[0]+3,BLACK_PEN_CO[1]+8)
 
 ####
 ##Start the screen
 # Initialise screen
-screen = pygame.display.set_mode(DISPLAY_SIZE)
+screen = pygame.display.set_mode(DISPLAY_SIZE) # or use (DISPLAY_SIZE,pygame.FULLSCREEN) when on Rpy
 pygame.display.set_caption('Fe')
 screen.fill(LIGHTGRAY)
 pygame.display.flip() 
@@ -66,6 +70,8 @@ start_vid = "./soccer/startvid/"
 picture_dir = "./soccer/picture/*.jpg"
 music_dir = "./soccer/music/*.mp3"
 end_vid_dir = "./soccer/endvid/*.mpg"
+animate_sprite = "./soccer/animate_sprite/*.jpg"
+
 
 ###
 #Create lists of files in these paths
@@ -75,6 +81,7 @@ start_videos = glob.glob(start_vid + "*.mpg")
 pictures  = glob.glob(picture_dir)
 music = glob.glob(music_dir)
 end_vid = glob.glob(end_vid_dir)
+sprites = glob.glob(animate_sprite)
 
 #####
 #Set the scores
@@ -83,7 +90,7 @@ black_score = 0
 
 
 #######
-#The buttons defined in extras.py
+#Instantiate some buttons defined in extras.py
 red_button = Button('Red Goal','RED')
 black_button = Button('Black Goal','GREEN')
 red_penalty_btn = Button('Red Penalty','RED')
@@ -95,7 +102,7 @@ black_penalty_btn = Button('Black Penalty','GREEN')
 #DEFINE A bunch of functions
 
 def random_chance(percentage_play):
-  random_number = random.randint(1, 10)
+  random_number = random.randint(0, 10)
   percentage = int(percentage_play*10)
   if( random_number < percentage):
     return True
@@ -108,7 +115,7 @@ def red_score_interupt():
       play_vid(goal_videos)  
     return
     
-def red_score_interupt():
+def black_score_interupt():
     black_score = black_score+1
     if random_chance(PERCENTAGE_GOAL_VIDEO_PLAY):
       play_vid(goal_videos)  
@@ -131,10 +138,10 @@ def render_backgorund():
   surface_image = pygame.image.load(pictures[0])
   surface_image = pygame.transform.scale(surface_image, DISPLAY_SIZE)
   screen.blit(surface_image,(0,0))     ##surface_image.convert(screen)
-  red_button.draw(screen, mouse, RED_BTN_CO, RED_BTN_TEXT)
-  black_button.draw(screen, mouse, BLACK_BTN_CO, BLACK_BTN_TEXT)
-  red_penalty_btn.draw(screen, mouse, RED_PEN_CO, RED_PEN_TXT)
-  black_penalty_btn.draw(screen, mouse, BLACK_PEN_CO, BLACK_PEN_TXT)
+  red_button.draw_nice(screen, mouse, RED_BTN_CO, RED_BTN_TEXT)
+  black_button.draw_nice(screen, mouse, BLACK_BTN_CO, BLACK_BTN_TEXT)
+  red_penalty_btn.draw_nice(screen, mouse, RED_PEN_CO, RED_PEN_TXT)
+  black_penalty_btn.draw_nice(screen, mouse, BLACK_PEN_CO, BLACK_PEN_TXT)
   pygame.display.flip() 
 
 def play_sound(sound_list):
@@ -158,24 +165,19 @@ def draw_score(score_red,score_black):
 def play_vid(video_list):
     pygame.mixer.quit() #stop the mixer, so that the video can play
     movie = pygame.movie.Movie(random.choice(video_list))
-    #movie = pygame.transform.scale(movie, DISPLAY_SIZE)  
-    #screen = pygame.display.set_mode(DISPLAY_SIZE)   ###normally movie.get_size()
-    movie_screen = pygame.Surface(DISPLAY_SIZE).convert() ##normally movie.get_size()
     movie.set_display(screen,(0,0,DISPLAY_SIZE[0],DISPLAY_SIZE[1]))  ##was movie_screen
     pygame.display.flip() 
-    print "playing movie"
+    #print "playing movie"
     movie.play()
     pygame.mixer.init() #start mixer for the sounds again
     time.sleep(10)
     return
 
 def red_wins():
-  #red wins code here
   play_vid(end_vid)
   return
   
 def black_wins():
-  #black wins code here
   play_vid(end_vid)
   return  
     
@@ -186,14 +188,32 @@ done = False
 pygame.mixer.init()
 mouse = pygame.mouse.get_pos()
 clock = pygame.time.Clock()
+
+
+SPRITE_COORDINATE = (int(DISPLAY_SIZE[0]/2),int(DISPLAY_SIZE[1]/2))
+
+my_sprite = TestSprite(SPRITE_COORDINATE,sprites)
+
+
+my_group = pygame.sprite.Group(my_sprite)
+
+
 ##Start an endless loop
 while not done:
-  #draw scores on screen
+
+  #Draw Animation sprites to screen.
+  my_group.update()
+  my_group.draw(screen)
+  pygame.display.flip()
+
+
   clock.tick(60)
   mouse = pygame.mouse.get_pos()
   
-  
   ##Check for music playing, if not play something
+  if not pygame.mixer.get_init():
+    #print "Mixer uninitialuized"
+    pygame.mixer.init()
   if not pygame.mixer.music.get_busy():
     play_sound(music)
  
@@ -220,33 +240,6 @@ while not done:
         black_score = black_score -1
         if random_chance(PERCENTAGE_PENALTY_VIDEO_PLAY):
           play_vid(goal_videos) 
-  #my_input = raw_input("What's your selection?: ")
-  my_input = ""
-  
-  ##Replace these with button presses eventually  
-  if my_input == "RESTART":
-    restart_program()
-    continue
-  if my_input == "BLACK":
-    #play_vid(goal_videos)
-    play_sound(music)
-    black_score = black_score +1
-    print "Updating Black"
-    
-  if my_input == "RED":
-    #play_vid(goal_videos)
-    play_sound(music)
-    red_score = red_score +1
-    
-  if my_input == "RED_DOWN":   
-    #play_vid(penalty_videos)
-    play_sound(music)
-    red_score = red_score -1   
-  if my_input == "BLACK_DOWN":   
-    #play_vid(penalty_videos)
-    play_sound(music)
-    
-    red_score = black_score -1   
  
   if(score_check(red_score,black_score) == "black" ):
     black_wins()
@@ -256,7 +249,7 @@ while not done:
     red_wins()  
     done = True
 
-  #check make sure scores arent too small
+  #check make sure scores aren't too small
   if(red_score < 0):
     red_score = 0
   if(black_score <0):
