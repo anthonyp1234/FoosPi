@@ -27,7 +27,7 @@ myfont = pygame.font.SysFont("comicsansms", 80)  #initialize system font
 DISPLAY_SIZE = (320, 240)
 RED_TEXT = (int(DISPLAY_SIZE[0]/3)-30,20)  ###Align score text to display
 BLACK_TEXT = (int(DISPLAY_SIZE[0]*2/3)-30, 20)  ###Align score text to display
-FPS = 60
+FPS = 25
 
 REDRAW_SPRITE = 500 # REDRAW_SPRITE time in ms
 
@@ -55,12 +55,11 @@ BLACK_PEN_CO = (BLACK_BTN_CO[0],BLACK_BTN_CO[1]+40,90,30)
 BLACK_PEN_TXT = (BLACK_PEN_CO[0]+3,BLACK_PEN_CO[1]+8)
 
 ####
-##Start the screen
-# Initialise screen
+##Start the screen Initialise screen
 screen = pygame.display.set_mode(DISPLAY_SIZE) # or use (DISPLAY_SIZE,pygame.FULLSCREEN) when on Rpy
-pygame.display.set_caption('Fe')
+pygame.display.set_caption('Foo')
 screen.fill(LIGHTGRAY)
-pygame.display.flip() 
+pygame.display.flip()
 
 ##directories
 penalty_vid_dir = "./soccer/penaltyvid/"
@@ -70,8 +69,6 @@ picture_dir = "./soccer/picture/*.jpg"
 music_dir = "./soccer/music/*.mp3"
 end_vid_dir = "./soccer/endvid/*.mpg"
 animate_sprite = "./soccer/animate_sprite/*.jpg"
-
-###
 #Create lists of files in these paths
 penalty_videos = glob.glob(penalty_vid_dir + "*.mpg")
 goal_videos = glob.glob(goal_vid_dir + "*.mpg")
