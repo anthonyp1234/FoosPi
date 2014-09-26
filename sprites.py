@@ -29,7 +29,5 @@ class TestSprite(pygame.sprite.Sprite):
         self.image = self.images[self.index]
     
     
- #  def add_image(self,imag):
-      ##USe this to add an image to the sprite
 
       

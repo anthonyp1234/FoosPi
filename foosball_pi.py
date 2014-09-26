@@ -5,13 +5,10 @@ import random
 import glob #for listing all the files in a directory
 import pygame
 import sys
-import time
+#import time
 import os
 from extras import Button
-
 from sprites import TestSprite
-
-
 
 ##SET GPIO to trigger on a low voltage 
 #GPIO.setmode(GPIO.BCM)
@@ -33,8 +30,6 @@ BLACK_TEXT = (int(DISPLAY_SIZE[0]*2/3)-30, 20)  ###Align score text to display
 FPS = 60
 
 REDRAW_SPRITE = 500 # REDRAW_SPRITE time in ms
-
-
 
 PERCENTAGE_GOAL_VIDEO_PLAY = 0.6
 PERCENTAGE_PENALTY_VIDEO_PLAY = 0.2
@@ -76,7 +71,6 @@ music_dir = "./soccer/music/*.mp3"
 end_vid_dir = "./soccer/endvid/*.mpg"
 animate_sprite = "./soccer/animate_sprite/*.jpg"
 
-
 ###
 #Create lists of files in these paths
 penalty_videos = glob.glob(penalty_vid_dir + "*.mpg")
@@ -92,7 +86,6 @@ sprites = glob.glob(animate_sprite)
 red_score = 0
 black_score = 0  
 
-
 #######
 #Instantiate some buttons defined in extras.py
 red_button = Button('Red Goal','RED')
@@ -100,11 +93,8 @@ black_button = Button('Black Goal','GREEN')
 red_penalty_btn = Button('Red Penalty','RED')
 black_penalty_btn = Button('Black Penalty','GREEN')
 
-
-
 ######
 #DEFINE A bunch of functions
-
 def random_chance(percentage_play):
   random_number = random.randint(0, 10)
   percentage = int(percentage_play*10)
@@ -165,6 +155,7 @@ def draw_score(score_red,score_black):
     screen.blit(score_text_red, RED_TEXT)
     screen.blit(score_text_black, BLACK_TEXT)
     pygame.display.flip() 
+    
   
 def play_vid(video_list):
     pygame.mixer.quit() #stop the mixer, so that the video can play
@@ -223,7 +214,7 @@ while not done:
   
   ##Check for music playing, if not play something
   if not pygame.mixer.get_init():
-    #print "Mixer uninitialuized"
+    #print "Mixer uninitialized"
     pygame.mixer.init()
   if not pygame.mixer.music.get_busy():
     play_sound(music)
@@ -269,15 +260,8 @@ while not done:
     red_score = 0
   if(black_score <0):
     black_score =0
-    
-  
-    
+
 
 #cleanup everything
 #GPIO.cleanup()
 restart_program()
-
-
-
-
-

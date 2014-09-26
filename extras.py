@@ -18,7 +18,7 @@ class Button:
         self.default_color = GREEN
       if(new_colour == "RED"):
         self.default_color = RED     
-      #####Anthony additions
+      #####Anthony's additions
 
   def label(self):
       '''button label font'''
