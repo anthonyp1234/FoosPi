@@ -11,14 +11,13 @@ from extras import Button
 from sprites import TestSprite
 
 ##SET GPIO to trigger on a low voltage 
-#GPIO.setmode(GPIO.BCM)
+#GPIO.setmode(GPIO.BOARD)
 #GPIO.setup(23, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 #GPIO.setup(24, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 
 #GPIO.add_event_detect(23,GPIO.FALLING)
-#GPIO.add_event_callback(23,red_score_interupt,1000) #debounce 1 second
 #GPIO.add_event_detect(24,GPIO.FALLING)
-#GPIO.add_event_callback(24,black_score_interupt,1000) #debounce 1 second
+
 
 pygame.init()
 pygame.mixer.init()
@@ -105,13 +104,14 @@ def red_score_interupt():
     if random_chance(PERCENTAGE_GOAL_VIDEO_PLAY):
       play_vid(goal_videos)  
     return
-    
+#GPIO.add_event_callback(23,red_score_interupt,1000) #debounce 1 second   
+
 def black_score_interupt():
     black_score = black_score+1
     if random_chance(PERCENTAGE_GOAL_VIDEO_PLAY):
       play_vid(goal_videos)  
     return
-
+#GPIO.add_event_callback(24,black_score_interupt,1000) #debounce 1 second
 
 def score_check(score_red,score_black):
   who_won = ""
